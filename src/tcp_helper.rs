@@ -13,7 +13,7 @@ pub fn start(listen_port: u16) {
     println!("starting listen on port:{}", listen_port);
 
     let requestpool= RequestPool::new(6);
-    for tcpstream in listener.incoming() {
+    for tcpstream in listener.incoming().take(2) {
         requestpool.execute(tcpstream.unwrap());
     }
 }

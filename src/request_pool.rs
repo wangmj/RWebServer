@@ -4,7 +4,7 @@ use crate::http_processer;
 
 
 pub struct RequestPool    {
-        sender:Sender<TcpStream>,
+        sender:Option<Sender<TcpStream>>,
         workers:Vec<Worker>
 }
 impl RequestPool{
@@ -19,12 +19,19 @@ impl RequestPool{
             workers.push(w);
         }
         Self{
-            sender:send,
+            sender:Some(send),
             workers
         }
     }
    pub fn execute(&self,stream: TcpStream){
-       let _= self.sender.send(stream);
+       let _= self.sender.as_ref().unwrap().send(stream);
+    }
+}
+impl Drop for RequestPool{
+    fn drop(&mut self) {
+        println!("on dropping");
+        drop(self.sender.take());
+        
     }
 }
 struct Worker{
