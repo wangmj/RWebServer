@@ -1,5 +1,8 @@
+use std::default;
+
 #[derive(Debug,Default)]
 pub enum HttpMethod{
+   #[default]
     Get,
     Post,
     Put,
